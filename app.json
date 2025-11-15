@@ -2,6 +2,7 @@
   "expo": {
     "name": "raumie-client",
     "slug": "raumie-client",
+    "scheme": "raumieclient",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,12 +19,22 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "package": "com.raumie.app"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.raumie.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "46b9d635-c8b9-47e4-ad6c-cdeb557394c9"
+      }
+    },
+    "plugins": [
+      "expo-web-browser"
+    ]
   }
 }

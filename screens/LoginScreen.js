@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../config/firebaseConfig";
+import GoogleLoginButton from "../components/GoogleLoginButton";
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
@@ -42,6 +43,7 @@ export default function LoginScreen({ navigation }) {
       <Text onPress={() => navigation.navigate("Register")} style={styles.link}>
         Don't have an account? Register
       </Text>
+      <GoogleLoginButton navigation={navigation} />
     </View>
   );
 }
