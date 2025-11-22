@@ -7,6 +7,7 @@ import HomeScreen from './screens/HomeScreen';  // Placeholder for post-login sc
 import CreateRoomScreen from './screens/CreateRoomScreen';
 import JoinRoomScreen from './screens/JoinRoomScreen';
 import RoomDashboard from './screens/RoomDashboard';
+import EditPostScreen from './screens/EditPostScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -21,6 +22,7 @@ export default function App() {
         <Stack.Screen name="CreateRoom" component={CreateRoomScreen} />
         <Stack.Screen name="JoinRoom" component={JoinRoomScreen}/>
         <Stack.Screen name="RoomDashboard" component={RoomDashboard} />
+        <Stack.Screen name="EditPostScreen" component={EditPostScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
