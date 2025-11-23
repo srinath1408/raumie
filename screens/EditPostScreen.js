@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { Video } from 'expo-av';
 import { uploadToCloudinary } from '../utils/cloudinary';
+import { BASE_URL } from '../config';
 
 const getMimeType = (uri) => {
   const extension = (uri || '').split('.').pop().toLowerCase();
@@ -24,7 +25,7 @@ export default function EditPostScreen({ route, navigation }) {
       const cloudinaryUrl = await uploadToCloudinary(
         media.uri, 'doseuydte', 'demo_preset', mimeType
       );
-      await fetch('http://10.104.217.20:5000/posts', {
+      await fetch(`${BASE_URL}/posts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

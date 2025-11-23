@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
+import { BASE_URL } from '../config';
 
 export default function Comments({ postId, user }) {
   const [comments, setComments] = useState([]);
   const [text, setText] = useState("");
 
   useEffect(() => {
-    fetch(`http://10.104.217.20:5000/comments/post/${postId}`)
+    fetch(`${BASE_URL}/comments/post/${postId}`)
       .then(res => res.json())
       .then(data => setComments(data.comments || []));
   }, [postId]);
 
   const handleAddComment = async () => {
     if (text.trim() === "") return;
-    await fetch(`http://10.104.217.20:5000/comments`, {
+    await fetch(`${BASE_URL}/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -24,7 +25,7 @@ export default function Comments({ postId, user }) {
       })
     });
     setText("");
-    const res = await fetch(`http://10.104.217.20:5000/comments/post/${postId}`);
+    const res = await fetch(`${BASE_URL}/comments/post/${postId}`);
     const data = await res.json();
     setComments(data.comments || []);
   };

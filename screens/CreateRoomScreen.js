@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useRoute } from '@react-navigation/native';
 import { View, Text, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import { BASE_URL } from '../config';
 
 export default function CreateRoomScreen({ navigation}) {
   const route = useRoute();
@@ -19,7 +20,7 @@ export default function CreateRoomScreen({ navigation}) {
 
     try {
   console.log('Sending create room request...');
-  const response = await fetch('http://10.104.217.20:5000/rooms/create', {
+  const response = await fetch(`${BASE_URL}/rooms/create`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name: roomName, ownerId: user.uid }),

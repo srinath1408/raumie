@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, Alert } from 'react-native';
 import { Menu, IconButton } from 'react-native-paper'; 
 import Comments from '../components/Comments';
+import { BASE_URL } from '../config';
 
 export default function PostViewerScreen({ navigation, route }) {
   const { post, user } = route.params;
@@ -12,7 +13,7 @@ export default function PostViewerScreen({ navigation, route }) {
     Alert.alert("Delete", "Are you sure you want to delete this post?", [
       { text: "Cancel" },
       { text: "Delete", onPress: async () => {
-        await fetch(`http://10.104.217.20:5000/posts/${post._id}`, { method: 'DELETE' });
+        await fetch(`${BASE_URL}/posts/${post._id}`, { method: 'DELETE' });
         navigation.goBack();
       }},
     ]);

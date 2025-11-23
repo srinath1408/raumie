@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Button, StyleSheet, Alert, FlatList, TouchableOpacity, Modal, TextInput } from "react-native";
 import { auth } from "../config/firebaseConfig";
 import { useFocusEffect } from "@react-navigation/native";
+import { BASE_URL } from '../config';
 
 export default function HomeScreen({ navigation }) {
   const user = auth.currentUser;
@@ -14,7 +15,7 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     if (user?.uid) {
-      fetch(`http://10.104.217.20:5000/user/${user.uid}`)
+      fetch(`${BASE_URL}/user/${user.uid}`)
         .then(res => res.json())
         .then(data => {
           if (data.name) {
@@ -29,7 +30,7 @@ export default function HomeScreen({ navigation }) {
   }, [user?.uid]);
 
   const handleSetName = async () => {
-    await fetch(`http://10.104.217.20:5000/user/${user.uid}`, {
+    await fetch(`${BASE_URL}/user/${user.uid}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: userName })
@@ -40,7 +41,7 @@ export default function HomeScreen({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       if (user?.uid) {
-        fetch(`http://10.104.217.20:5000/rooms/user/${user.uid}`)
+        fetch(`${BASE_URL}/rooms/user/${user.uid}`)
           .then(response => {
             if (!response.ok) throw new Error(`HTTP status ${response.status}`);
             return response.json();
