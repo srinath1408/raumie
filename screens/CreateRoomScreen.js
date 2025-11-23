@@ -19,7 +19,7 @@ export default function CreateRoomScreen({ navigation}) {
 
     try {
   console.log('Sending create room request...');
-  const response = await fetch('http://10.104.216.23:5000/rooms/create', {
+  const response = await fetch('http://10.104.217.20:5000/rooms/create', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name: roomName, ownerId: user.uid }),

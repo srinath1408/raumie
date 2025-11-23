@@ -2,10 +2,10 @@ import React from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Video } from 'expo-av';
 
-export default function PostsFeed({ posts, navigation }) {
+export default function PostsFeed({ posts, navigation, user }) {
   const renderPostItem = ({ item }) => (
     <TouchableOpacity
-      onPress={() => navigation.navigate('PostViewerScreen', { post: item })}
+      onPress={() => navigation.navigate('PostViewerScreen', { post: item, user })} // pass user as is
       style={styles.postItem}
     >
       {item.mediaUrl.endsWith('.mp4') ? (

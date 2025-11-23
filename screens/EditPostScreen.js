@@ -24,7 +24,7 @@ export default function EditPostScreen({ route, navigation }) {
       const cloudinaryUrl = await uploadToCloudinary(
         media.uri, 'doseuydte', 'demo_preset', mimeType
       );
-      await fetch('http://10.104.216.23:5000/posts', {
+      await fetch('http://10.104.217.20:5000/posts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
