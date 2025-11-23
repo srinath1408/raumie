@@ -46,7 +46,7 @@ export default function RoomMenu({ navigation, room, user }) {
         <Menu.Item
           onPress={() => {
             setMenuVisible(false);
-            navigation.navigate("RoomDetails", { room });
+            navigation.navigate("RoomDetails", { room }, {user});
           }}
           title="Room Details"
         />
