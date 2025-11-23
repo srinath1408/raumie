@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import { Video } from 'expo-av';
 import { uploadToCloudinary } from '../utils/cloudinary';
 
 const getMimeType = (uri) => {
-  const extension = uri.split('.').pop().toLowerCase();
+  const extension = (uri || '').split('.').pop().toLowerCase();
   if (extension === 'png') return 'image/png';
   if (extension === 'jpg' || extension === 'jpeg') return 'image/jpeg';
   if (extension === 'mp4') return 'video/mp4';
@@ -13,15 +14,15 @@ const getMimeType = (uri) => {
 export default function EditPostScreen({ route, navigation }) {
   const { media, roomId, userId } = route.params;
   const [caption, setCaption] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleUpload = async () => {
+    if (loading) return;
+    setLoading(true);
     try {
       const mimeType = media.mimeType || getMimeType(media.uri);
       const cloudinaryUrl = await uploadToCloudinary(
-        media.uri,
-        'doseuydte',
-        'demo_preset',
-        mimeType
+        media.uri, 'doseuydte', 'demo_preset', mimeType
       );
       await fetch('http://10.104.216.23:5000/posts', {
         method: 'POST',
@@ -33,8 +34,10 @@ export default function EditPostScreen({ route, navigation }) {
           caption,
         }),
       });
+      setLoading(false);
       navigation.goBack();
     } catch (err) {
+      setLoading(false);
       Alert.alert('Upload error', err.message || 'Unknown error');
     }
   };
@@ -44,7 +47,13 @@ export default function EditPostScreen({ route, navigation }) {
       {media.type === 'image' ? (
         <Image source={{ uri: media.uri }} style={styles.preview} />
       ) : (
-        <Text>Video preview coming soon</Text>
+        <Video
+          source={{ uri: media.uri }}
+          style={styles.preview}
+          useNativeControls
+          resizeMode="contain"
+          shouldPlay={false}
+        />
       )}
       <TextInput
         style={styles.input}
@@ -52,8 +61,11 @@ export default function EditPostScreen({ route, navigation }) {
         value={caption}
         onChangeText={setCaption}
       />
-      <TouchableOpacity style={styles.button} onPress={handleUpload}>
-        <Text style={styles.buttonText}>Save Post</Text>
+      <TouchableOpacity style={styles.button} onPress={handleUpload} disabled={loading}>
+        {loading
+          ? <ActivityIndicator color="#fff" />
+          : <Text style={styles.buttonText}>Save Post</Text>
+        }
       </TouchableOpacity>
     </View>
   );
@@ -63,6 +75,6 @@ const styles = StyleSheet.create({
   container: { padding: 24, flex: 1, justifyContent: 'center' },
   preview: { width: 300, height: 300, alignSelf: 'center', marginBottom: 20 },
   input: { borderWidth: 1, padding: 8, marginBottom: 20, borderRadius: 8 },
-  button: { backgroundColor: '#2196F3', padding: 16, borderRadius: 8 },
+  button: { backgroundColor: '#2196F3', padding: 16, borderRadius: 8, alignItems: 'center' },
   buttonText: { color: '#fff', textAlign: 'center', fontWeight: 'bold' },
 });

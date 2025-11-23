@@ -30,8 +30,11 @@ export default function CreateRoomScreen({ navigation}) {
   
   if (response.ok) {
     Alert.alert('Success', `Room created! Your room code is: ${json.room.code}`);
-    navigation.navigate('RoomDashboard', { roomId: json.room._id });
-  } else {
+    navigation.replace('RoomDashboard', {
+        roomId: json.room._id,
+        user: { uid: user.uid, email: user.email }
+    });
+} else {
     Alert.alert('Error', json.error || 'Failed to create room');
   }
 } catch (error) {

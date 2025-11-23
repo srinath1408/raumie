@@ -1,33 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Button, StyleSheet, Alert, FlatList, TouchableOpacity } from "react-native";
 import { auth } from "../config/firebaseConfig";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function HomeScreen({ navigation }) {
   const user = auth.currentUser;
   const [rooms, setRooms] = useState([]);
-
-  useEffect(() => {
-  if (user?.uid) {
-    fetch(`http://10.104.216.23:5000/rooms/user/${user.uid}`)
-      .then(response => {
-        console.log('Response status:', response.status);
-        if (!response.ok) {
-          throw new Error(`HTTP status ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Fetched rooms:', data.rooms);
-        setRooms(data.rooms);
-      })
-      .catch(err => {
-        console.error('Fetch error:', err);
-        Alert.alert("Error fetching rooms");
-      });
-  }
-}, [user?.uid]);
-
-
+  useFocusEffect(
+  React.useCallback(() => {
+    if (user?.uid) {
+      fetch(`http://10.104.216.23:5000/rooms/user/${user.uid}`)
+        .then(response => {
+          console.log('Response status:', response.status);
+          if (!response.ok) {
+            throw new Error(`HTTP status ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Fetched rooms:', data.rooms);
+          setRooms(data.rooms);
+        })
+        .catch(err => {
+          console.error('Fetch error:', err);
+          Alert.alert("Error fetching rooms");
+        });
+    }
+  }, [user?.uid])
+);
 
   const renderRoomItem = ({ item }) => (
     <TouchableOpacity

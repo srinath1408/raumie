@@ -1,47 +1,27 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
-// import { Video } from 'expo-video';
 import { Video } from 'expo-av';
 
-
-export default function PostsFeed({ posts }) {
-
-const videoRef = useRef(null);
-
-// const renderPostItem = ({ item }) => (
-//   <View style={styles.postItem}>
-//     {item.mediaUrl.endsWith('.mp4') ? (
-//       <Video
-//         source={{ uri: item.mediaUrl }}
-//         style={{ width: 300, height: 200 }}
-//         useNativeControls
-//         resizeMode="contain"
-//         isLooping
-//       />
-//     ) : (
-//       <Image source={{ uri: item.mediaUrl }} style={styles.postMedia} />
-//     )}
-//     <Text style={styles.postCaption}>{item.caption}</Text>
-//   </View>
-// );
-const renderPostItem = ({ item }) => (
-  <View style={styles.postItem}>
-    {item.mediaUrl.endsWith('.mp4') ? (
+export default function PostsFeed({ posts, navigation }) {
+  const renderPostItem = ({ item }) => (
+    <TouchableOpacity
+      onPress={() => navigation.navigate('PostViewerScreen', { post: item })}
+      style={styles.postItem}
+    >
+      {item.mediaUrl.endsWith('.mp4') ? (
         <Video
-  source={{ uri: item.mediaUrl }}
-  style={{ width: 300, height: 200 }}
-  useNativeControls
-  resizeMode="contain"
-  isLooping
-  shouldPlay={false}
-/>
-
-    ) : (
-      <Image source={{ uri: item.mediaUrl }} style={styles.postMedia} />
-    )}
-    <Text style={styles.postCaption}>{item.caption}</Text>
-  </View>
-);
+          source={{ uri: item.mediaUrl }}
+          style={styles.postMedia}
+          useNativeControls
+          resizeMode="contain"
+          isLooping
+        />
+      ) : (
+        <Image source={{ uri: item.mediaUrl }} style={styles.postMedia} />
+      )}
+      <Text style={styles.postCaption}>{item.caption}</Text>
+    </TouchableOpacity>
+  );
 
   return (
     <FlatList

@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
-import PostsFeed from '../components/PostsFeed';
-import MediaUploader from '../components/MediaUploader';
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, Alert } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import PostsFeed from "../components/PostsFeed";
+import MediaUploader from "../components/MediaUploader";
+import RoomMenu from "../components/RoomMenu";
 
 export default function RoomDashboard({ route, navigation }) {
   const { roomId, user } = route.params;
@@ -9,6 +11,7 @@ export default function RoomDashboard({ route, navigation }) {
   const [posts, setPosts] = useState([]);
 
   const fetchRoomAndPosts = async () => {
+    console.log('RoomDashboard user:', user);
     try {
       const roomRes = await fetch(`http://10.104.216.23:5000/rooms/${roomId}`);
       const roomData = await roomRes.json();
@@ -18,10 +21,15 @@ export default function RoomDashboard({ route, navigation }) {
       const postData = await postRes.json();
       setPosts(postData.posts);
     } catch (err) {
-      Alert.alert('Error', 'Failed to load room details or posts');
+      Alert.alert("Error", "Failed to load room details or posts");
     }
   };
-  useEffect(() => { fetchRoomAndPosts(); }, [roomId]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchRoomAndPosts();
+    }, [roomId])
+  );
 
   if (!room) {
     return <Text style={styles.loading}>Loading room...</Text>;
@@ -31,20 +39,26 @@ export default function RoomDashboard({ route, navigation }) {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>{room.name}</Text>
+        <RoomMenu navigation={navigation} room={room} user={{ _id: user.uid, email: user.email }}/>
       </View>
-      <MediaUploader roomId={roomId} userId={user._id} onUpload={fetchRoomAndPosts} navigation={navigation} />  {/* pass navigation! */}
-      <PostsFeed posts={posts} />
+      <MediaUploader roomId={roomId} userId={user._id} navigation={navigation} />
+      <PostsFeed posts={posts} navigation={navigation} />
     </View>
   );
-
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
   header: {
-    height: 60, paddingHorizontal: 15, justifyContent: 'center',
-    backgroundColor: '#eee', borderBottomWidth: 1, borderColor: '#ccc',
+    height: 60,
+    paddingHorizontal: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#eee",
+    justifyContent: "space-between",
+    borderBottomWidth: 1,
+    borderColor: "#ccc"
   },
-  title: { fontSize: 24, fontWeight: 'bold' },
-  loading: { flex: 1, textAlign: 'center', marginTop: 50, fontSize: 20 },
+  title: { fontSize: 24, fontWeight: "bold", flex: 1 },
+  loading: { flex: 1, textAlign: "center", marginTop: 50, fontSize: 20 }
 });
