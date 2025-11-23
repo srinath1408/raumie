@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
 import { BASE_URL } from '../config';
+import socket from './socket';
 
 export default function Comments({ postId, user }) {
   const [comments, setComments] = useState([]);
@@ -10,6 +11,19 @@ export default function Comments({ postId, user }) {
     fetch(`${BASE_URL}/comments/post/${postId}`)
       .then(res => res.json())
       .then(data => setComments(data.comments || []));
+
+    socket.emit('joinPost', postId);
+
+    const handleNewComment = (comment) => {
+      if (comment.postId === postId)
+        setComments(prev => [...prev, comment]);
+    };
+
+    socket.on('newComment', handleNewComment);
+
+    return () => {
+      socket.off('newComment', handleNewComment);
+    };
   }, [postId]);
 
   const handleAddComment = async () => {
@@ -24,10 +38,7 @@ export default function Comments({ postId, user }) {
         text
       })
     });
-    setText("");
-    const res = await fetch(`${BASE_URL}/comments/post/${postId}`);
-    const data = await res.json();
-    setComments(data.comments || []);
+    setText(""); // instant reset, newComment will update the list
   };
 
   return (
@@ -59,53 +70,17 @@ export default function Comments({ postId, user }) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
-  commentsContainer: {
-    flex: 1,
-    backgroundColor: '#111'
-  },
-  header: {
-    fontWeight: "bold",
-    fontSize: 16,
-    marginBottom: 8,
-    marginLeft: 10,
-    color: '#fff'
-  },
-  commentsList: {
-    flex: 1,
-    marginLeft: 10,
-  },
-  comment: {
-    flexDirection: "row",
-    marginBottom: 5,
-    
-    alignItems: 'flex-start'
-  },
-  user: {
-    fontWeight: "bold",
-    marginRight: 4,
-    color: '#fff'
-  },
-  text: {
-    color: '#fff'
-  },
+  commentsContainer: { flex: 1, backgroundColor: '#111' },
+  header: { fontWeight: "bold", fontSize: 16, marginBottom: 8, marginLeft: 10, color: '#fff' },
+  commentsList: { flex: 1, marginLeft: 10 },
+  comment: { flexDirection: "row", marginBottom: 5, alignItems: 'flex-start' },
+  user: { fontWeight: "bold", marginRight: 4, color: '#fff' },
+  text: { color: '#fff' },
   inputRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderTopWidth: 1,
-    borderColor: "#222",
-    padding: 8,
-    backgroundColor: '#111'
+    flexDirection: "row", alignItems: "center", borderTopWidth: 1,
+    borderColor: "#222", padding: 8, backgroundColor: '#111'
   },
-  input: {
-    flex: 1,
-    borderColor: '#555',
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 8,
-    marginRight: 8,
-    color: '#fff',
-    backgroundColor: '#222'
-  }
+  input: { flex: 1, borderColor: '#555', borderWidth: 1, borderRadius: 8,
+           padding: 8, marginRight: 8, color: '#fff', backgroundColor: '#222' }
 });

@@ -6,7 +6,6 @@ import { BASE_URL } from '../config';
 
 export default function HomeScreen({ navigation }) {
   const user = auth.currentUser;
-  // Avoid console.log(user.name) if userName is empty—log user instead
   console.log(user);
 
   const [rooms, setRooms] = useState([]);
@@ -39,18 +38,29 @@ export default function HomeScreen({ navigation }) {
   };
 
   useFocusEffect(
-    React.useCallback(() => {
-      if (user?.uid) {
-        fetch(`${BASE_URL}/rooms/user/${user.uid}`)
-          .then(response => {
-            if (!response.ok) throw new Error(`HTTP status ${response.status}`);
-            return response.json();
-          })
-          .then(data => setRooms(data.rooms))
-          .catch(() => Alert.alert("Error fetching rooms"));
-      }
-    }, [user?.uid])
-  );
+  React.useCallback(() => {
+    if (user?.uid) {
+      fetch(`${BASE_URL}/rooms/user/${user.uid}`)
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP status ${response.status}`);
+          return response.json();
+        })
+        .then(data => {
+          // Filter out private rooms where user is not a member
+          const filteredRooms = data.rooms.filter(room => {
+            if (room.isPrivate) {
+              // Only include if user is still in members list
+              return room.members.includes(user.uid);
+            }
+            return true; // include all non-private rooms
+          });
+          setRooms(filteredRooms);
+        })
+        .catch(() => Alert.alert("Error fetching rooms"));
+    }
+  }, [user?.uid])
+);
+
 
   const renderRoomItem = ({ item }) => (
     <TouchableOpacity
@@ -58,7 +68,10 @@ export default function HomeScreen({ navigation }) {
       onPress={() =>
         navigation.navigate("RoomDashboard", {
           roomId: item._id,
-          user: { uid: user.uid, email: user.email, name: userName || user.email } // Fallback to email if name empty
+          user: { uid: user.uid, email: user.email, name: userName || user.email },
+    onRoomExit: (exitedRoomId) => {
+      setRooms(prevRooms => prevRooms.filter(r => r._id !== exitedRoomId));
+    },// Fallback to email if name empty
         })
       }
     >

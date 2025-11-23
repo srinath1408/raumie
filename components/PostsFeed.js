@@ -1,11 +1,37 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Video } from 'expo-av';
+import socket from './socket';
 
-export default function PostsFeed({ posts, navigation, user }) {
+export default function PostsFeed({ posts, setPosts, navigation, user, currentRoomId }) {
+
+  useEffect(() => {
+  socket.emit('joinRoom', currentRoomId);
+
+  const handleNewPost = (newPost) => {
+    if (newPost.roomId.toString() === currentRoomId.toString()) {
+      setPosts(prev => [newPost, ...prev]);
+    }
+  };
+
+  const handleDeletePost = (deletedPostId) => {
+    setPosts(prev => prev.filter(post => post._id !== deletedPostId));
+  };
+
+  socket.on('newPost', handleNewPost);
+  socket.on('deletePost', handleDeletePost);
+
+  return () => {
+    socket.off('newPost', handleNewPost);
+    socket.off('deletePost', handleDeletePost);
+  };
+}, [currentRoomId, setPosts]);
+
+
+
   const renderPostItem = ({ item }) => (
     <TouchableOpacity
-      onPress={() => navigation.navigate('PostViewerScreen', { post: item, user })} // pass user as is
+      onPress={() => navigation.navigate('PostViewerScreen', { post: item, user })}
       style={styles.postItem}
     >
       {item.mediaUrl.endsWith('.mp4') ? (

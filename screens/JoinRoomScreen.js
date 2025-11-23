@@ -7,7 +7,7 @@ export default function JoinRoomScreen({ navigation, route }) {
   const { user } = route.params; // get user from navigation params
 
   const joinRoom = async () => {
-    console.log('join response:', data, 'status:', res.status);
+    
     if (!roomCode) {
       Alert.alert('Please enter a room code');
       return;
@@ -20,7 +20,7 @@ export default function JoinRoomScreen({ navigation, route }) {
         body: JSON.stringify({ code: roomCode, userId: user.uid })
       });
       const data = await res.json();
-
+      console.log('join response:', data, 'status:', res.status);
       if (res.ok && data.room) {
         // Success - go to dashboard with room object and user
         navigation.replace('RoomDashboard', { roomId: data.room._id, user });
