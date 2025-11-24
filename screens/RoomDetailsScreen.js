@@ -7,6 +7,7 @@ export default function RoomDetailsScreen({ route }) {
     <View style={{ flex: 1, padding: 24 }}>
       <Text>Room Name: {room.name}</Text>
       <Text>Room Code: {room.code}</Text>
+      <Text>Room Type: {room.isPrivate ? 'Private' : 'Public'}</Text>
       <Text>Owner: {room.owner?.name || "Unknown"}</Text>
       <Text>Members:</Text>
       {Array.isArray(room.members) && room.members.length > 0

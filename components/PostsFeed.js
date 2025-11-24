@@ -31,7 +31,7 @@ export default function PostsFeed({ posts, setPosts, navigation, user, currentRo
 
   const renderPostItem = ({ item }) => (
     <TouchableOpacity
-      onPress={() => navigation.navigate('PostViewerScreen', { post: item, user })}
+      onPress={() => navigation.navigate('PostViewerScreen', { post: item, user },)}
       style={styles.postItem}
     >
       {item.mediaUrl.endsWith('.mp4') ? (

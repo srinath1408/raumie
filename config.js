@@ -1,2 +1,2 @@
 // config.js
-export const BASE_URL = "http://10.104.217.20:5000";
+export const BASE_URL = "https://buckishly-disciplinal-ximena.ngrok-free.dev";

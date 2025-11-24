@@ -125,7 +125,7 @@ export default function HomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", padding: 20 },
-  welcome: { fontSize: 22, textAlign: "center", marginBottom: 20 },
+  welcome: { fontSize: 22, textAlign: "center", marginBottom: 20, marginTop: 20 },
   buttons: { marginBottom: 30, flexDirection: "row", justifyContent: "space-around" },
   roomItem: { padding: 15, borderWidth: 1, borderColor: '#bbb', borderRadius: 8, marginBottom: 10 },
   roomName: { fontSize: 18, fontWeight: 'bold' },
